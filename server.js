@@ -8,5 +8,5 @@ app.get("/books", (req, res) => {
     res.send("welcome from home");
 });
 app.listen(8000, () => {
-    console.log("welcome from home");
+    console.log(`Running on 8000`);
 });
