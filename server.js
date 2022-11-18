@@ -1,15 +1,32 @@
 const express = require("express");
-const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
+const { readdirSync } = require("fs");
+const dotenv = require("dotenv");
+dotenv.config();
 
-app.get("/", (req, res) => {
-    console.log("Testing")
-    res.send("welcome from ashish");
-});
-app.get("/books", (req, res) => {
-    console.log("Testing 1")
-    res.send("welcome from ashis home");
-});
-app.listen(8000, () => {
-    console.log("Testing 2")
-    console.log(`Running on hello 8000`);
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const useRoutes = require("./routes/user");
+const { Console } = require("console");
+app.use("/user", useRoutes);
+
+//routes
+readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
+
+// database
+console.log(process.env.DATABASE_URL, "databse ")
+mongoose.connect(process.env.DATABASE_URL, {
+        useNewUrlParser: true,
+    })
+    .then(() => console.log("databse connected succesfully"))
+    .catch((err) => console.log("error connecting to mongodb", err));
+
+
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+    console.log(`Running on hello ${PORT}`);
 });

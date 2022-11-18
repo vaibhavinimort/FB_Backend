@@ -1,3 +1,8 @@
 https://sumantmishra.medium.com/how-to-deploy-node-js-app-on-aws-with-github-db99758294f1
 https://www.digitalocean.com/community/tutorials/how-to-build-a-node-js-application-with-docker
 https://github.com/felixyu9/nodejs-express-on-aws-ec2 # CICD 
+
+ec2-3-95-21-104.compute-1.amazonaws.com:8000
+3.95.21.104:8000
+
+https://pm2.keymetrics.io/docs/usage/quick-start/
