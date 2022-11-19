@@ -20,6 +20,7 @@ readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
 console.log(process.env.DATABASE_URL, "databse ")
 mongoose.connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,
+        useUnifiedTopology: true
     })
     .then(() => console.log("databse connected succesfully"))
     .catch((err) => console.log("error connecting to mongodb", err));
