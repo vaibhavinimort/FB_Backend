@@ -18,4 +18,5 @@ sudo npm install pm2@latest -g
 npm install
 
 #start our node app in the background
-pm2 start server.js --name FBServer -i 0
+# pm2 start server.js --name FBServer -i 0
+npm start
