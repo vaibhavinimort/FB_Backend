@@ -13,10 +13,10 @@ export NVM_DIR="$HOME/.nvm"
 
 #install node modules
 nvm use 16
-# sudo npm install pm2@latest -g
+sudo npm install pm2@latest -g
+npm -v
+node -v
 npm install
-sudo npm i -g pm2
-
 
 #start our node app in the background
 pm2 start server.js --name FBServer -i 0
