@@ -13,7 +13,9 @@ export NVM_DIR="$HOME/.nvm"
 
 #install node modules
 nvm use 16
-sudo npm install pm2@latest -g
+# sudo npm install pm2@latest -g
+sudo npm i -g pm2
+
 
 npm install
 
