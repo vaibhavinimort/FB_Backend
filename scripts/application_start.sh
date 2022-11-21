@@ -16,7 +16,7 @@ nvm use 16
 npm install pm2@latest -g
 npm -v
 node -v
-# npm install
+npm install
 
 #start our node app in the background
 pm2 start server.js --name FBServer -i 0
