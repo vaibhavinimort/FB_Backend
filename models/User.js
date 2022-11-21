@@ -33,7 +33,7 @@
      },
      picture: {
          type: String,
-         default: "C:\Users\91917\Downloads"
+         default: "https://thumbs.dreamstime.com/z/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg"
      },
      email: {
          type: String,
