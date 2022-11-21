@@ -21,7 +21,7 @@ console.log(process.env.DATABASE_URL, "databse ")
 mongoose.connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,
     })
-    .then(() => console.log("databse connected succesfully"))
+    .then(() => console.log("database connected succesfully"))
     .catch((err) => console.log("error connecting to mongodb", err));
 
 
