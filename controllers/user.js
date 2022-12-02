@@ -3,6 +3,7 @@ const { validateLength } = require("../helpers/validation");
 const { validateUsername } = require("../helpers/validation");
 const { generateToken } = require("../helpers/token");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { sendVerificationEmail } = require("../helpers/mailer");
 
@@ -55,7 +56,7 @@ exports.register = async(req, res) => {
         let tempUsername = first_name + last_name;
         let newUsername = await validateUsername(tempUsername);
 
-        debugger;
+
         const user = await new User({
             first_name,
             last_name,
@@ -69,7 +70,7 @@ exports.register = async(req, res) => {
         }).save();
 
         const emailVerificationToken = generateToken({ id: user._id.toString() },
-            "30"
+            "30m"
         );
         const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`
         sendVerificationEmail(user.email, user.first_name, url);
@@ -88,3 +89,39 @@ exports.register = async(req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.activateAccount = async(req, res) => {
+    const { token } = req.params;
+    try {
+        const user = jwt.verify(token, process.env.TOKEN_SECRETE);
+        console.log(user);
+
+        const check = await User.findById(user.id);
+        console.log(check);
+
+        if (check.verified == true) {
+            return res.status(400).json({ message: "this email is already verifies" })
+        } else {
+            await User.findByIdAndUpdate(user.id, { verified: true });
+            return res.status(200).json({ message: "Account has been activated successfully" })
+        }
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+};
+
+exports.login = async(req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log({ email });
+        const user = User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "the email addres you entered is not connected to an account" });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+
+    }
+
+}
