@@ -19,4 +19,4 @@ node -v
 npm install
 
 #start our node app in the background
-pm2 start server.js --name FBServer -i 0
+pm2 start --no-daemon server.js --name FBServer -i 0
