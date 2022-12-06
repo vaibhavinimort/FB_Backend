@@ -8,7 +8,7 @@ router.get("/activate/:token", authUser, activateAccount);
 router.post("/login", login);
 router.post("/login", login);
 router.post("/sendVerification", authUser, sendVerification);
-router.post("/auth", authUser, auth);
+router.post("/auth", authUser, () => console.log('Auth'));
 
 
 
