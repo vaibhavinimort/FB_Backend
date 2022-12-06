@@ -14,6 +14,7 @@ const useRoutes = require("./routes/user");
 const { Console } = require("console");
 app.use("/user", useRoutes);
 
+
 //routes
 readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
 
