@@ -122,9 +122,9 @@ exports.activateEmail = async(req, res) => {
 
         const check = await User.findById(user.id);
         console.log(check);
-        if (validUser !== user.id) {
-            return res.status(400).json({ message: "you dont have the authorization to complete this operation" });
-        }
+        // if (validUser !== user.id) {
+        //     return res.status(400).json({ message: "you dont have the authorization to complete this operation" });
+        // }
 
         if (check.verified == true) {
             return res.status(400).json({ message: "this email is already verifies" })
