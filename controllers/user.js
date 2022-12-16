@@ -2,10 +2,13 @@ const { validateEmail } = require("../helpers/validation");
 const { validateLength } = require("../helpers/validation");
 const { validateUsername } = require("../helpers/validation");
 const { generateToken } = require("../helpers/token");
+const Code = require("../models/Code");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { sendVerificationEmail } = require("../helpers/mailer");
+const { sendVerificationEmail, sendResetCode } = require("../helpers/mailer");
+const generateCode = require("../helpers/generateCode");
+const { errorMonitor } = require("nodemailer/lib/xoauth2");
 
 
 exports.register = async(req, res) => {
@@ -172,7 +175,9 @@ exports.login = async(req, res) => {
 exports.sendVerification = async(req, res) => {
     try {
         const id = req.user.id;
+        console.log(id);
         const user = await User.findById(id);
+        console.log(user);
         if (user.verified === true) {
             return res.status(400).json({ message: "this account is already activated" });
         }
@@ -184,6 +189,63 @@ exports.sendVerification = async(req, res) => {
         return res.status(200).json({ message: "Email verification link has been send to your email" });
 
     } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.findUser = async(req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email }).select("-password");
+        if (!user) {
+            return res.status(400).json({ message: "this account is not exist" });
+        }
+        return res.status(200).json({ email: user.email, picture: user.picture, });
+    } catch (error) {
         res.status(500).json({ message: "message.error" })
+    }
+}
+
+exports.sendResetPasswordCode = async(req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email }).select("-password");
+        console.log(user);
+        const userId = await Code.findOneAndRemove({ user: user._id });
+        console.log(userId);
+        const code = generateCode(5);
+        const saveCode = await new Code({ code, user: user._id }).save();
+        sendResetCode(user.email, user.first_name, code);
+        return res.status(200).json({ message: 'Email reset code has been sent to your email.' });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+
+exports.validateResetCode = async(req, res) => {
+    try {
+        const { email, code } = req.body;
+        const user = await User.findOne({ email });
+        const Dbcode = await Code.findOne({ user: user._id });
+        if (Dbcode.code !== code) {
+            return res.status(400).json({ message: "verification code is wrong.." });
+        }
+        return res.status(200).json({ message: 'ok' });
+    } catch (error) {
+        res.status(500).json({ message: "message.error" })
+    }
+}
+
+exports.changePassword = async(req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log(email, password);
+        const cryptedPassword = await bcrypt.hash(password, 12);
+        await User.findOneAndUpdate({ email }, { password: cryptedPassword, });
+        return res.status(200).json({ message: "ok" });
+    } catch (error) {
+        res.status(500).json({ message: error.message })
     }
 }
