@@ -14,9 +14,11 @@
     "description": "",
     "dependencies": {
         "bcrypt": "^5.1.0",
+        "cloudinary": "^1.33.0",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
+        "express-fileupload": "^1.4.0",
         "googleapis": "^109.0.1",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.12.0",
