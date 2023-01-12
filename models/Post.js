@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema.Types;
 
-const { ObjectId } = new mongoose.Schema({
+const postSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ["profilepicture", "cover", null],
@@ -9,7 +10,7 @@ const { ObjectId } = new mongoose.Schema({
     text: {
         type: String,
     },
-    iamges: {
+    images: {
         type: Array,
     },
     user: {
@@ -25,7 +26,7 @@ const { ObjectId } = new mongoose.Schema({
             type: String,
         },
         image: {
-            type: String;
+            type: String
         },
         commentBy: {
             type: ObjectId,
@@ -33,7 +34,7 @@ const { ObjectId } = new mongoose.Schema({
         },
         commentAt: {
             type: Date,
-            dafault: new Date();
+            dafault: new Date()
         },
     }, ],
 }, {
