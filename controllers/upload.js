@@ -11,12 +11,11 @@ cloudinary.config({
 exports.uploadImages = async(req, res) => {
     try {
         const { path } = req.body;
-        console.log({ path });
         let files = Object.values(req.files).flat();
         let images = [];
         for (const file of files) {
             const url = await uploadToCloudinary(file, path);
-            images.push(url);
+            images.push();
             removeTmp(file.tempFilePath);
         }
         res.json(images);
@@ -24,6 +23,20 @@ exports.uploadImages = async(req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.listImages = async(req, res) => {
+
+    const { path, sort, max } = req.body;
+
+    cloudinary.v2.search.expression(`${path}`).sort_by("public_id", `${sort}`).max_results(max).execute().then((result) => {
+        res.json(result);
+    }).catch((error) => {
+        res.status(500).json({ message: error.message });
+
+    });
+
+};
+
 
 const uploadToCloudinary = async(file, path) => {
     return new Promise((resolve) => {
