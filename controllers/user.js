@@ -4,6 +4,7 @@ const { validateUsername } = require("../helpers/validation");
 const { generateToken } = require("../helpers/token");
 const Code = require("../models/Code");
 const User = require("../models/User");
+const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { sendVerificationEmail, sendResetCode } = require("../helpers/mailer");
@@ -27,7 +28,7 @@ exports.register = async(req, res) => {
 
         if (!validateEmail(email)) {
             return res.status(400).json({
-                message: "invalid email addres",
+                message: "invalid email address",
             });
         }
 
@@ -247,5 +248,76 @@ exports.changePassword = async(req, res) => {
         return res.status(200).json({ message: "ok" });
     } catch (error) {
         res.status(500).json({ message: error.message })
+    }
+}
+
+exports.getProfile = async(req, res) => {
+    try {
+        const { username } = req.params;
+        const profile = await User.find({ username }).select("-password");
+        if (!profile) {
+            return res.json({ ok: false })
+        }
+        const posts = await Post.find({ user: profile_id }).populate("user");
+        res.json({...profile.toObject(), posts });
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+};
+
+exports.updateProfilePicture = async(req, res) => {
+    try {
+        const { url } = req.body;
+        await User.findByIdAndUpdate(req.user.id, {
+            picture: url,
+        });
+        res.json(url);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
+
+exports.updateCover = async(req, res) => {
+    try {
+        const { url } = req.body;
+        await User.findByIdAndUpdate(req.user.id, {
+            cover: url,
+        });
+        res.json(url);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
+
+exports.updateDetails = async(req, res) => {
+    try {
+        const { infos } = req.body;
+        const updated = await User.findByIdAndUpdate(req.user.id, {
+            details: infos,
+        }, {
+            new: true,
+        });
+        res.json(updated.details);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
+
+exports.addFriend = async(req, res) => {
+    try {
+        if (req.user.id !== req.params.id) {
+            const sender = await User.findById(req.user.id);
+            const receiver = await User.findById(req.params.id);
+
+        } else {
+            return res.status(400).json({ message: "you can't send a request to yourself" })
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
     }
 }
