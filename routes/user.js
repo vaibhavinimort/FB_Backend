@@ -1,7 +1,24 @@
 const express = require("express");
-const { register, activateAccount, login, auth, sendVerification, activateEmail, findUser, sendResetPasswordCode, validateResetCode, changePassword } = require("../controllers/user");
+const {
+    register,
+    activateAccount,
+    login,
+    auth,
+    sendVerification,
+    activateEmail,
+    findUser,
+    sendResetPasswordCode,
+    validateResetCode,
+    changePassword,
+    getProfile,
+    updateProfilePicture,
+    updateCover,
+    updateDetails,
+    addFriend
+} = require("../controllers/user");
 const router = express.Router();
 const { authUser } = require("../middleware/auth.js");
+const User = require("../models/User");
 
 router.post("/register", register);
 router.post("/activate/", authUser, activateAccount);
@@ -13,6 +30,23 @@ router.post("/findUser", findUser);
 router.post("/sendResetPasswordCode", sendResetPasswordCode);
 router.post("/validateResetCode", validateResetCode);
 router.post("/changePassword", changePassword);
+router.get("/getProfile/:username", authUser, getProfile);
+router.put("/updateProfilePicture/", authUser, updateProfilePicture);
+router.put("/updateCover", authUser, updateCover);
+router.put("/updateDetails", authUser, updateDetails);
+router.put("/addFriends/:id", authUser, addFriend);
+
+
+
+
+// router.get("/user/:id/:name", async(req, res) => {
+//     // URL '/'      => req.params
+//     // URL after ?  => req.query
+//     // Send Kiya {POST|PUT|PATCH} => req.body
+//     const { id, name } = req.params
+//     const { daughter, age } = req.query
+//     res.send({ id, name, daughter, age })
+// })
 
 
 
