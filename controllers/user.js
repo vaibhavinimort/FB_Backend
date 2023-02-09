@@ -279,7 +279,9 @@ exports.getProfile = async(req, res) => {
         if (profile.requests.includes(user._id)) {
             friendship.requestSent = true;
         }
-        const posts = await Post.find({ user: profile_id }).populate("user").sort({ createdAt: -1 });
+        const posts = await Post.find({ user: profile_id })
+            .populate("user").populate('comments.commentBy', 'first_name last_name picture username commentAt')
+            .sort({ createdAt: -1 });
         res.json({...profile.toObject(), posts, friendship });
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -530,3 +532,77 @@ exports.deleteRequest = async(req, res) => {
 
     }
 }
+
+
+exports.search = async(req, res) => {
+    try {
+        const searchTerm = req.params.searchTerm;
+        const results = await User.find({ $text: { $search: searchTerm } }).select(
+            "first_name last_name username picture"
+        );
+        res.jason(results)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.addToSearchHistory = async(req, res) => {
+    try {
+        const { searchUser } = req.body;
+        const search = {
+            user: searchUser,
+            createdAt: new Date(),
+        };
+        const user = await User.findById(req.user.id);
+        const check = user.search.find((x) => x.user.toString() === searchUser);
+        if (check) {
+            await User.updateOne({
+                _id: req.user.id,
+                "search._id": check._id
+            }, {
+                $set: { "search.$.createdAt": new Date() },
+            });
+        } else {
+            await User.findByIdAndUpdate(req.user.id, {
+                $push: {},
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+
+    }
+}
+
+exports.getSearchHistory = async(req, res) => {
+    try {
+        const results = await User.findById(req.user.id)
+            .select('search')
+            .populate("search.user", "firsst_name last_name username picture");
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.removeFromSearch = async(req, res) => {
+        try {
+            const { searchUser } = req.body;
+            await User.updateOne({
+                    {
+                        _id: req.user.id,
+
+                    },
+                    {
+                        $pull: {
+                            search: {
+                                user: searchUser
+                            }
+                        }
+                    }
+                );
+            }
+            catch (error) {
+                res.status(500).json({ message: error.message })
+
+            }
+        }
