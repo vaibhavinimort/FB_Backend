@@ -20,7 +20,11 @@ const {
     unfollow,
     acceptRequest,
     unfriend,
-    deleteRequest
+    deleteRequest,
+    search,
+    addToSearchHistory,
+    getSearchHistory,
+    removeFromSearch
 } = require("../controllers/user");
 const router = express.Router();
 const { authUser } = require("../middleware/auth.js");
@@ -47,6 +51,12 @@ router.put("/unfollow/:id", authUser, unfollow);
 router.put("/acceptRequest/:id", authUser, acceptRequest);
 router.put("/unfriend/:id", authUser, unfriend);
 router.put("/deleteRequest/:id", authUser, deleteRequest);
+router.put("/search/:searchTerm", authUser, search);
+router.put("/addToSearchHistory", authUser, addToSearchHistory);
+router.put("/getSearchHistory", authUser, getSearchHistory);
+router.put("/removeFromSearch", authUser, removeFromSearch);
+
+
 
 
 
