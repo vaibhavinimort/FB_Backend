@@ -2,10 +2,12 @@ const { file } = require("googleapis/build/src/apis/file");
 
 module.exports = async function(req, res, next) {
     try {
-        if (!req.files || Object.values(req.files).flat().length === 0) {
+        const { files } = req.body;
+
+        if (!files || Object.values(files).flat().length === 0) {
             return res.status(400).json({ message: "no file selected." });
         }
-        let files = Object.values(req.files).flat();
+        // let files = Object.values(req.files).flat();
         files.forEach((file) => {
             if (
                 file.mimetype !== "image/jpeg" &&
