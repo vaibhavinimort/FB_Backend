@@ -89,6 +89,10 @@
              type: ObjectId,
              ref: 'User'
          },
+         createdAt: {
+             type: Date,
+             required: true
+         }
      }, ],
      details: {
          bio: {
@@ -131,7 +135,7 @@
          },
          SavedAt: {
              type: Date,
-             default: new Date(),
+             required: true
          },
      }, ],
  }, {
