@@ -11,7 +11,7 @@ exports.reactPost = async(res, req) => {
             const newReact = new React({
                 react: react,
                 postRef: postId,
-                reactBy: req.user.id;
+                reactBy: req.user.id
             })
             await newReact.save();
         } else {
@@ -59,15 +59,22 @@ exports.getReacts = async(res, req) => {
                 react: 'angry',
                 count: newReacts.like ? newReacts.like.length : 0,
             },
-        ]
+        ];
+        reacts.sort((a, b) => {
+            return b.count - a.count;
+        })
 
-        const check = awaitReact.findOne({
+        const check = await React.findOne({
             postRef: req.params.id,
             reactBy: req.user.id
         });
+        const user = await User.findById(req.user.id);
+        const checkSaved = user.savePosts.find((x) => x.post === req.params.id);
         res.json({
             reacts,
-            check: check ? .react,
+            check: check.react,
+            total: reactsArray.length,
+            checkSaved: checkSaved ? true : false,
         });
 
     } catch (error) {
